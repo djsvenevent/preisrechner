@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hochzeits-DJ Preisrechner</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f5f7;
+      color: #1a1a1a;
+    }
+    .wrapper {
+      max-width: 1100px;
+      margin: auto;
+      padding: 40px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .header p {
+      color: #888;
+      margin-bottom: 10px;
+    }
+    .icon {
+      font-size: 32px;
+      color: #796849;
+    }
+    .calculator {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      display: flex;
+      overflow: hidden;
+    }
+    .left, .right {
+      flex: 1;
+      padding: 30px;
+    }
+    .right {
+      background: #f8f9fa;
+    }
+    h3 {
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .range-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    input[type=range] {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .package-buttons, .lighting-buttons {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .package-buttons button, .lighting-buttons button {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid #ddd;
+      background: #fff;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .active {
+      border-color: #796849 !important;
+      background: #f3f1ee;
+    }
+    .toggle-group {
+      margin-top: 10px;
+    }
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      margin: 8px 0;
+      font-weight: 500;
+      color: #444;
+    }
+    .toggle {
+      width: 40px;
+      height: 20px;
+      border-radius: 20px;
+      background: #ccc;
+      position: relative;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .toggle::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+    input[type=checkbox]:checked + .toggle {
+      background: #796849;
+    }
+    input[type=checkbox]:checked + .toggle::before {
+      transform: translateX(20px);
+    }
+    input[type=checkbox] {
+      display: none;
+    }
+    .price-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      font-size: 15px;
+    }
+    .price-box .total {
+      font-weight: bold;
+      font-size: 20px;
+      color: #796849;
+      margin-top: 10px;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      background: #796849;
+      color: white;
+      padding: 12px;
+      text-align: center;
+      font-weight: bold;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-decoration: none;
+    }
+    .summary {
+      background: #f3f1ee;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+  
+input[type=range] {
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: #ccc;
+  outline: none;
+}
+input[type=range]::-webkit-slider-runnable-track {
+  background: #d0cbd0;
+  height: 6px;
+  border-radius: 3px;
+}
+input[type=range]::-moz-range-track {
+  background: #796849;
+  height: 6px;
+  border-radius: 3px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #796849;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -5px;
+}
+input[type=range]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #796849;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+</style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <div class="icon">🎵</div>
+      <h1>Hochzeits-DJ Preisrechner</h1>
+      <p>Für deine perfekte Feier</p>
+    </div>
+
+    <div class="calculator">
+      <div class="left">
+        <h3>Basisspielstunden</h3>
+        <div class="range-label"><span>3h</span><span id="hoursVal">5</span><span>10h</span></div>
+        <input type="range" min="3" max="10" value="5" id="hours">
+
+        <h3>Anzahl der Gäste</h3>
+        <div class="range-label"><span>20</span><span id="guestsVal">80</span><span>150</span></div>
+        <input type="range" min="20" max="150" value="80" id="guests">
+
+        <h3>DJ-Paket</h3>
+        <div class="package-buttons">
+          <button onclick="selectPackage('basis')" id="basis" class="active">Basis<br>899 €</button>
+          <button onclick="selectPackage('komfort')" id="komfort">Komfort<br>1.199 €</button>
+          <button onclick="selectPackage('premium')" id="premium">Premium<br>1.699 €</button>
+        </div>
+
+        <h3>Verlängerungsstunden</h3>
+        <div class="range-label"><span>0h</span><span id="extraHoursVal">0</span><span>5h</span></div>
+        <input type="range" min="0" max="5" value="0" id="extraHours">
+
+        <h3>Zusatzoptionen:</h3>
+        <div class="toggle-group">
+          <label class="toggle-label"><input type="checkbox" id="weddingDance"><span class="toggle"></span>Zusammenschnitt Crazy Wedding Dance (+49 €)</label>
+          <label class="toggle-label"><input type="checkbox" id="ledLight"><span class="toggle"></span>LED Lichteffekt (+15 €)</label>
+          <label class="toggle-label"><input type="checkbox" id="wirelessMic"><span class="toggle"></span>Funkmikrofon (+35 €)</label>
+          <label class="toggle-label"><input type="checkbox" id="extraSpeaker"><span class="toggle"></span>Separater Lautsprecher (+69 €)</label>
+          <label class="toggle-label"><input type="checkbox" id="fogMachine"><span class="toggle"></span>Nebelmaschine (+40 €)</label>
+          <label class="toggle-label"><input type="checkbox" id="movingHead"><span class="toggle"></span>Moving Head Screen Truss (+89 €)</label>
+        </div>
+
+        <h3 style="color: #796849; font-size: 20px;">Ambiente-Beleuchtung</h3>
+        <div class="lighting-buttons">
+          <button onclick="selectLight(0)" id="light0" class="active">Keine<br>+0 €</button>
+          <button onclick="selectLight(69)" id="light69">6x Beleuchtung<br>+69 €</button>
+          <button onclick="selectLight(99)" id="light99">12x Beleuchtung<br>+99 €</button>
+        </div>
+
+        <h3>Entfernung zum Veranstaltungsort (km)</h3>
+        <div class="range-label"><span>0</span><span id="distanceVal">40</span><span>200</span></div>
+        <input type="range" min="0" max="200" value="40" id="distance">
+        <p style="font-size: 12px; color: #666;">Bis 60 km im Paket enthalten. Darüber hinaus: 0,50 € pro km (Hin- und Rückfahrt)</p>
+      </div>
+
+      <div class="right">
+        <div class="price-box">
+          <p>Gewähltes Paket: <span id="preisPaket">899</span> €</p>
+          <p>Verlängerungsstunden: 0 €</p>
+          <p>Zusatzoptionen: <span id="preisZusatz">0</span> €</p>
+          <p>Ambiente-Beleuchtung: <span id="preisLicht">0</span> €</p>
+          <p>Kilometerpauschale: <span id="preisKM">0</span> €</p>
+          <p class="total">Gesamtpreis: <span id="total">899</span> €</p>
+          <a class="btn" id="sendButton" target="_blank">Unverbindliche Anfrage senden</a>
+        </div>
+        <div class="summary">
+          <strong>Deine Auswahl im Überblick:</strong>
+          <ul>
+            <li id="summaryPaket">Basis-Paket mit 5 Stunden</li>
+            <li id="summaryGaeste">80 Gäste</li>
+            <li id="summaryDist">Entfernung: 40 km</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const basePrices = { basis: 899, komfort: 1199, premium: 1699 };
+    let selectedPackage = 'basis';
+    let selectedLight = 0;
+    const pricePerExtraHour = 100;
+
+    function update() {
+      const guests = document.getElementById("guests").value;
+      const hours = document.getElementById("hours").value;
+      const extraHours = document.getElementById("extraHours").value;
+      const distance = document.getElementById("distance").value;
+
+      let extras = 0;
+      if (document.getElementById("weddingDance").checked) extras += 49;
+      if (document.getElementById("ledLight").checked) extras += 15;
+      if (document.getElementById("wirelessMic").checked) extras += 35;
+      if (document.getElementById("extraSpeaker").checked) extras += 69;
+      if (document.getElementById("fogMachine").checked) extras += 40;
+      if (document.getElementById("movingHead").checked) extras += 89;
+
+      const extraHourCost = extraHours * pricePerExtraHour;
+      const km = distance > 60 ? (distance - 60) * 0.5 : 0;
+
+      const total = basePrices[selectedPackage] + extras + extraHourCost + selectedLight + km;
+
+      document.getElementById("hoursVal").innerText = hours;
+      document.getElementById("guestsVal").innerText = guests;
+      document.getElementById("extraHoursVal").innerText = extraHours;
+      document.getElementById("distanceVal").innerText = distance;
+
+      document.getElementById("preisPaket").innerText = basePrices[selectedPackage];
+      document.querySelector(".price-box p:nth-child(2)").innerText = `Verlängerungsstunden: ${extraHourCost} €`;
+      document.getElementById("preisZusatz").innerText = extras;
+      document.getElementById("preisLicht").innerText = selectedLight;
+      document.getElementById("preisKM").innerText = km.toFixed(2);
+      document.getElementById("total").innerText = total.toFixed(2);
+
+      document.getElementById("summaryPaket").innerText = `${capitalize(selectedPackage)}-Paket mit ${hours} Stunden`;
+      document.getElementById("summaryGaeste").innerText = `${guests} Gäste`;
+      document.getElementById("summaryDist").innerText = `Entfernung: ${distance} km`;
+    }
+
+    function selectPackage(pkg) {
+      selectedPackage = pkg;
+      ["basis", "komfort", "premium"].forEach(id => {
+        document.getElementById(id).classList.remove("active");
+      });
+      document.getElementById(pkg).classList.add("active");
+      update();
+    }
+
+    function selectLight(val) {
+      selectedLight = val;
+      [0, 69, 99].forEach(id => {
+        document.getElementById("light" + id).classList.remove("active");
+      });
+      document.getElementById("light" + val).classList.add("active");
+      update();
+    }
+
+    function capitalize(word) {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }
+
+    document.querySelectorAll("input, select").forEach(el => {
+      el.addEventListener("input", update);
+      el.addEventListener("change", update);
+    });
+
+    document.querySelectorAll("button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        setTimeout(update, 50);
+      });
+    });
+
+    document.getElementById("sendButton").addEventListener("click", function (e) {
+      const paket = selectedPackage;
+      const stunden = document.getElementById("hours").value;
+      const extras = document.getElementById("preisZusatz").innerText;
+      const total = document.getElementById("total").innerText;
+
+      const url = `https://www.djsven-event.de/terminanfrage?paket=${paket}&stunden=${stunden}&extras=${extras}&gesamtpreis=${total}`;
+      this.href = url;
+    });
+
+    update();
+  </script>
+</body>
+</html>
